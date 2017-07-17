@@ -97,7 +97,7 @@ desc 'Populate Trusty image table data'
 task :gen_trusty_image_data do
   GENERATED_LANGUAGE_MAP_JSON_FILE = 'https://raw.githubusercontent.com/travis-infrastructure/terraform-config/master/aws-production-2/generated-language-mapping.json'
 
-  `curl -OsSfL '#{GENERATED_LANGUAGE_MAP_JSON_FILE}'`
+  fail unless sh "curl -OsSfL '#{GENERATED_LANGUAGE_MAP_JSON_FILE}'"
 
   json_data = JSON.load(File.read(File.basename(GENERATED_LANGUAGE_MAP_JSON_FILE)))
   yaml_data = json_data.to_yaml
@@ -125,7 +125,6 @@ task :serve => [:gen_trusty_image_data, :populate_lang_archive_list] do
 end
 
 namespace :assets do
-  task :precompile do
-    puts `bundle exec jekyll build`
+  task :precompile => [:build] do
   end
 end
